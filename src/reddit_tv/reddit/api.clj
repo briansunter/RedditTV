@@ -1,6 +1,7 @@
 (ns reddit-tv.reddit.api
   (:require
    [cheshire.core :refer [parse-string]]
+   [clojure.set :refer [rename-keys]]
    [reddit-tv.spec :as rs]
    [slingshot.slingshot :refer [try+ throw+]]
    [taoensso.timbre :refer [debug warn]]
@@ -9,7 +10,6 @@
    [clj-http.client :as http]
    [robert.bruce :refer [try-try-again *last-try* *try*]]
    [clojure.spec :as s]))
-
 
 (def fake-user-agent {"User-Agent" "Mozilla/5.0 (Windows NT 6.1;) Gecko/20100101 Firefox/13.0.1"})
 
@@ -24,7 +24,9 @@
        :body
        (parse-string true)
        :data
-       (select-keys [:after :children])))
+       (select-keys [:after :children])
+       (rename-keys {:children :posts})
+       ))
 
 (def top-videos-today "https://www.reddit.com/r/all/top.json")
 

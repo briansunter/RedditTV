@@ -11,6 +11,7 @@ and turns them into a YouTube playlist."
                  [com.taoensso/timbre "4.7.4"]
                  [environ "1.1.0"]
                  [org.clojure/clojure "1.9.0-alpha11"]
+                 [while-let "0.2.0"]
                  [org.clojure/core.async "0.2.385"]
                  [org.clojure/core.match "0.3.0-alpha4"]
                  [org.clojure/test.check "0.9.0"]

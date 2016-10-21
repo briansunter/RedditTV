@@ -87,6 +87,6 @@
 (s/def ::created (s/and number? pos?))
 (s/def ::data (s/keys :req-un [::title ::score ::created] :opt-un [::url]))
 (s/def ::post (s/keys :req-un [::data]))
-(s/def ::children (s/coll-of ::post))
+(s/def ::posts (s/coll-of ::post))
 (s/def ::after string?)
-(s/def ::post-page (s/keys :req-un [::after ::children]))
+(s/def ::post-page (s/keys :req-un [::after ::posts]))

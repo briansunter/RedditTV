@@ -10,5 +10,5 @@
 
 (deftest test-get-posts
   (instrument `get-posts-page {:stub #{`get-posts-page}})
-  (is (check-passed? (check `get-n-posts {:gen {::rs/n #(s/gen (s/int-in 0 10))}}))))
+  (is (check-passed? (check `get-n-posts {:gen {::rs/n #(s/gen (s/int-in 1 3))}}))))
 

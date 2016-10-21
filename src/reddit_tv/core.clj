@@ -1,6 +1,7 @@
 (ns reddit-tv.core
   (:require
    [clojure.spec :as s]
+   [while-let.core :refer [while-let]]
    [clojure.core.async :refer [go-loop >! <!! chan] :as a]
    [environ.core :refer [env]]
    [taoensso.timbre :refer [debug]]
@@ -18,25 +19,19 @@
 (defn get-posts
   [ch]
   (go-loop [a nil]
-    (let [res   (get-posts-page a)
-          posts (:children res)
-          after (:after res)]
-      (doseq [p posts]
-        (>! ch p))
-      (recur after))))
+    (let [{:keys [posts after]} (get-posts-page a)]
+      (a/onto-chan ch posts false) (recur after))))
 
 (defn upload-to-youtube
   [ch playlist-name]
   (let [token (get-youtube-auth-token)
         playlist-id (create-youtube-playlist playlist-name token)]
-    (loop []
-      (when-let [video-id (<!! ch)]
-        (add-video-to-playlist video-id playlist-id token)
-      (recur)))))
+      (while-let [video-id (<!! ch)]
+         (add-video-to-playlist video-id playlist-id token))))
 
 (s/fdef get-n-posts
         :args (s/cat :n ::rs/n)
-        :ret ::rs/children)
+        :ret ::rs/posts)
 
 (defn get-n-posts
   [n]
@@ -52,4 +47,4 @@
     (debug "starting reddit consumer")
     (get-posts posts-chan)
     (debug "starting youtube uploader")
-    (upload-to-youtube (a/take 15 posts-chan) playlist-title)))
+    (upload-to-youtube (a/take 20 posts-chan) playlist-title)))
