@@ -3,8 +3,7 @@
    [taoensso.timbre :as timbre]
    [clojure.spec.test :refer [instrument instrumentable-syms]]
    [taoensso.timbre.appenders.core :as appenders]
-   [environ.core :refer [env]]
-   ))
+   [environ.core :refer [env]]))
 
 (defn appender-config-with-filename
   [filename]
@@ -19,10 +18,7 @@
 
 (defn setup!
   []
-  (doall
-   (timbre/merge-config!
-    {:level :debug
-     :appenders appenders})
-   (when (= "test" (env :clj-env))(instrument (instrumentable-syms) {:stub (instrumentable-syms)}))
-   (when (= "repl" (env :clj-env))(instrument))
-   ))
+  (instrument)
+  (timbre/merge-config!
+   {:level :debug
+    :appenders appenders}))

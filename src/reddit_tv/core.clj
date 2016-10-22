@@ -13,8 +13,7 @@
                                   create-youtube-playlist
                                   add-video-to-playlist]]
    [reddit-tv.youtube.core :refer [playlist-title]]
-   [reddit-tv.reddit.core :refer [video-id-xforms]]
-   ))
+   [reddit-tv.reddit.core :refer [video-id-xforms]]))
 
 (defn get-posts
   [ch]
@@ -26,8 +25,8 @@
   [ch playlist-name]
   (let [token (get-youtube-auth-token)
         playlist-id (create-youtube-playlist playlist-name token)]
-      (while-let [video-id (<!! ch)]
-         (add-video-to-playlist video-id playlist-id token))))
+    (while-let [video-id (<!! ch)]
+               (add-video-to-playlist video-id playlist-id token))))
 
 (s/fdef get-n-posts
         :args (s/cat :n ::rs/n)
@@ -41,10 +40,10 @@
 
 (defn -main
   []
-  ;; (instrument)
+  (setup!)
   (debug "starting " (env :clj-env))
   (let [posts-chan (chan 3 video-id-xforms)]
     (debug "starting reddit consumer")
     (get-posts posts-chan)
     (debug "starting youtube uploader")
-    (upload-to-youtube (a/take 20 posts-chan) playlist-title)))
+    (upload-to-youtube (a/take 30 posts-chan) playlist-title)))

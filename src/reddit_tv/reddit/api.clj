@@ -12,12 +12,13 @@
    [robert.bruce :refer [try-try-again *last-try* *try*]]
    [clojure.spec :as s]))
 
-(def fake-user-agent {"User-Agent" "Mozilla/5.0 (Windows NT 6.1;) Gecko/20100101 Firefox/13.0.1"})
+(def fake-user-agent
+  {"User-Agent" "Mozilla/5.0 (Windows NT 6.1;) Gecko/20100101 Firefox/13.0.1"})
 
 (defn- reddit-params-for-page
   [p]
-  {:query-params {:limit 100 :sort "top" :t "all" :after p}
-   :headers (merge fake-user-agent)})
+  {:query-params {:limit 100 :sort "top" :t "day" :after p}
+   :headers fake-user-agent})
 
 (defn- parse-post-response
   [p]
@@ -26,8 +27,7 @@
        (parse-string true)
        :data
        (select-keys [:after :children])
-       (rename-keys {:children :posts})
-       ))
+       (rename-keys {:children :posts})))
 
 (def top-videos-today "https://www.reddit.com/r/all/top.json")
 
@@ -48,11 +48,12 @@
 
 (defmethod handle-http-error :default [ex] (throw+ ex))
 
+(def retry-options
+  {:sleep 1000 :tries 10 :decay :exponential :error-hook handle-http-error})
+
 (defn with-error-handling
   [f & args]
-  (try-try-again {:sleep 1000 :tries 10 :decay :exponential :error-hook handle-http-error} f args))
-
-(instrument `get-posts-page #{`get-posts-page})
+  (try-try-again retry-options f args))
 
 (s/fdef get-posts-page
         :args (s/cat :after (s/nilable string?))

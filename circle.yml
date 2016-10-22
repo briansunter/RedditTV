@@ -3,5 +3,13 @@ general:
     - "target/"
 
 test:
+  pre:
+    - "lein cljfmt check"
+    - "lein eastwood \"{:exclude-linters [:suspicious-expression]}\""
   post:
     - "lein cloverage"
+deployment:
+  production:
+    branch: master
+    heroku:
+      appname: topredditvideos

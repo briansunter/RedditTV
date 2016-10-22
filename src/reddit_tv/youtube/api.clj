@@ -57,15 +57,14 @@
 (defn- run-youtube-request
   [request]
   (try+
-   (-> request
-        http/request
+   (-> (http/request request)
        :body
        (parse-string true)
        :id)
    (catch [:status 404] _
      (warn "youtube video was deleted. skipping..."))
    (catch [:status 403] _
-     (warn "youtube wouldn't let us add that one..."))))
+     (warn "youtube wouldn't let us add that one. skipping..."))))
 
 (defn- create-playlist-request
   [name token]

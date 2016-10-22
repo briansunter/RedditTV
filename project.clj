@@ -19,7 +19,10 @@ and turns them into a YouTube playlist."
                  [slingshot "0.12.2"]]
   :dev {:dependencies [[org.clojure/test.check "0.9.0"]]}
   :main ^:skip-aot reddit-tv.core
-  :plugins [[lein-environ "1.1.0"] [lein-cloverage "1.0.8"]]
+  :plugins [[lein-environ "1.1.0"]
+            [lein-cloverage "1.0.8"]
+            [jonase/eastwood "0.2.3"]
+            [lein-cljfmt "0.5.6"]]
   :target-path "target/%s"
   :monkeypatch-clojure-test false
   :profiles {:uberjar {:aot :all}

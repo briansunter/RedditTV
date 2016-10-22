@@ -24,8 +24,7 @@
 
 (s/def ::n (s/with-gen
              pos-int?
-             #(s/gen (s/int-in 0 10))
-             ))
+             #(s/gen (s/int-in 0 10))))
 
 (defn short-url
   [host path]
@@ -36,7 +35,7 @@
   (str "https://" host "?v=" query))
 
 (defn gen-url
-  [url-type host-gen ]
+  [url-type host-gen]
   (gen/fmap
    (fn [[h q]] (url-type h q))
    (gen/tuple host-gen (gen/string-alphanumeric))))
@@ -72,8 +71,7 @@
                       string?
                       #(gen/one-of [(gen-url short-url gen-host)
                                     (gen-url long-url gen-host)
-                                    long-path-url
-                                    ])))
+                                    long-path-url])))
 
 (s/def ::url (s/or :short ::short-youtube-url
                    :long ::long-youtube-url
